@@ -1,11 +1,11 @@
 FROM debian:stable
 
-ARG RUNNER_VERSION=2.316.0
 ARG DEBIAN_FRONTEND=noninteractive
+ARG RUNNER_VERSION=2.316.0
 ARG USERNAME=runner-user
 
 RUN apt update -y && apt upgrade -y
-RUN apt install -y --no-install-recommends curl ca-certificates jq build-essential libssl-dev libffi-dev
+RUN apt install -y --no-install-recommends curl ca-certificates jq
 
 RUN useradd --create-home ${USERNAME}
 RUN mkdir -p /home/${USERNAME}/actions-runner
