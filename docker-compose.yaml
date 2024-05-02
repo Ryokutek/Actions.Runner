@@ -6,6 +6,7 @@ services:
     - ACCESS_TOKEN=
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
+    - /srv/docker/runner:/home/runner-user/actions-runner/_work
     deploy:
       mode: replicated
       replicas: 1

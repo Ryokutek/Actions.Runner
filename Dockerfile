@@ -21,7 +21,7 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/doc
 
 RUN apt update -y && apt install -y --no-install-recommends dotnet-sdk-8.0 docker-ce-cli docker-buildx-plugin docker-compose-plugin
 
-RUN useradd --create-home ${USERNAME}
+RUN useradd --create-home -G docker ${USERNAME}
 RUN mkdir -p /home/${USERNAME}/actions-runner
 
 WORKDIR /home/${USERNAME}/actions-runner
