@@ -6,7 +6,7 @@ ARG USERNAME=runner-user
 
 # Install core dependencies
 RUN apt update -y && apt upgrade -y
-RUN apt install -y --no-install-recommends curl ca-certificates jq
+RUN apt install -y --no-install-recommends curl wget ca-certificates jq
 
 # Install .NET SDK repository
 RUN wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
@@ -36,4 +36,4 @@ RUN chmod +x start-runner.sh
 
 USER ${USERNAME}
 
-ENTRYPOINT [ "/bin/sh", "-c", "./start-runner.sh" ]
+ENTRYPOINT [ "./start-runner.sh" ]
