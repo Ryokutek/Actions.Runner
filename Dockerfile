@@ -21,9 +21,8 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/doc
 
 RUN apt update -y && apt install -y --no-install-recommends dotnet-sdk-8.0 docker-ce-cli docker-buildx-plugin docker-compose-plugin
 
-RUN groupadd docker && useradd --create-home -G docker ${USERNAME}
+RUN useradd -s /bin/bash --create-home ${USERNAME}
 RUN mkdir -p /home/${USERNAME}/actions-runner
-RUN touch /var/run/docker.sock && chown root:docker /var/run/docker.sock
 
 WORKDIR /home/${USERNAME}/actions-runner
 
@@ -32,9 +31,10 @@ RUN tar -xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
 
 RUN chown -R ${USERNAME} /home/${USERNAME} && ./bin/installdependencies.sh
 
+COPY ./scripts/docker-entrypoint.sh docker-entrypoint.sh
 COPY ./scripts/start-runner.sh start-runner.sh
-RUN chmod +x start-runner.sh
+RUN chmod +x docker-entrypoint.sh start-runner.sh
 
 USER ${USERNAME}
 
-ENTRYPOINT [ "./start-runner.sh" ]
+ENTRYPOINT [ "./docker-entrypoint.sh" ]
