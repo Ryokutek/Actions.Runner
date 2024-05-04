@@ -25,10 +25,11 @@ fi
 ORG_NAME=$ORGANIZATION_NAME
 TOKEN=$ACCESS_TOKEN
 API_VERSION=$GITHUB_API_VERSION
+WORKING_DIRECTORY="running"
 
 REGISTRATION_TOKEN=$(curl -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${TOKEN}" -H "X-GitHub-Api-Version: ${API_VERSION}" https://api.github.com/orgs/${ORG_NAME}/actions/runners/registration-token | jq .token --raw-output)
-mkdir -p ./_work && chown -R runner-user ./_work
-sudo -u runner-user ./config.sh --unattended --url https://github.com/${ORG_NAME} --token ${REGISTRATION_TOKEN} --labels docker-runner
+mkdir -p ${WORKING_DIRECTORY} && chown -R runner-user ${WORKING_DIRECTORY}
+sudo -u runner-user ./config.sh --unattended --url https://github.com/${ORG_NAME} --token ${REGISTRATION_TOKEN} --work ${WORKING_DIRECTORY} --labels docker-runner
 
 cleanup() {
     echo "Removing runner from organization ${ORG_NAME}..."
