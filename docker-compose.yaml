@@ -4,6 +4,7 @@ services:
     environment:
     - ORGANIZATION_NAME=
     - ACCESS_TOKEN=
+    - GITHUB_API_VERSION=
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - /srv/docker/runners:/home/runner-user/actions-runner/_work
