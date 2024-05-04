@@ -5,22 +5,37 @@ if [[ ! -S /var/run/docker.sock ]]; then
 	exit 1
 fi
 
-if [[ ! -r /var/run/docker.sock || ! -w /var/run/docker.sock ]]
-then
+if [[ ! -r /var/run/docker.sock || ! -w /var/run/docker.sock ]]; then
     echo "Docker socket is missing read/write permission"
 	exit 1
 fi
 
-gid=$(stat -c '%g' '/var/run/docker.sock')
+GROUP_ID=$(stat -c '%g' '/var/run/docker.sock')
 
-if ! getent group "$gid" > /dev/null; then
-	addgroup --gid "$gid" docker
+if ! getent group "$GROUP_ID" > /dev/null; then
+	addgroup --gid "$GROUP_ID" docker
 fi
 
-gname=$(getent group "$gid" | cut -d: -f1)
+GROUP_NAME=$(getent group "$GROUP_ID" | cut -d: -f1)
 
-if ! groups myuser | grep --quiet "\b${gname}\b"; then
-	usermod --append --groups "$gid" myuser
+if ! groups runner-user | grep --quiet "\b${GROUP_NAME}\b"; then
+	usermod --append --groups "$GROUP_ID" runner-user
 fi
 
-sudo -u runner-user "./start-runner.sh"
+ORG_NAME=$ORGANIZATION_NAME
+TOKEN=$ACCESS_TOKEN
+
+REGISTRATION_TOKEN=$(curl -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${TOKEN}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/orgs/${ORG_NAME}/actions/runners/registration-token | jq .token --raw-output)
+sudo -u runner-user ./config.sh --unattended --url https://github.com/${ORG_NAME} --token ${REGISTRATION_TOKEN} --labels docker-runner
+
+cleanup() {
+    echo "Removing runner from organization ${ORG_NAME}..."
+
+    REMOVE_TOKEN=$(curl -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${TOKEN}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/orgs/${ORG_NAME}/actions/runners/remove-token | jq .token --raw-output)
+    sudo -u runner-user ./config.sh remove --token ${REMOVE_TOKEN}
+}
+
+trap 'cleanup; exit 130' INT
+trap 'cleanup; exit 143' TERM
+
+sudo -u runner-user ./run.sh & wait $!
