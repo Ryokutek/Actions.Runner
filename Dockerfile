@@ -31,14 +31,14 @@ RUN apt update -y && apt install -y --no-install-recommends \
     dotnet-sdk-8.0
 
 RUN echo "runner-user" > /tmp/username
-RUN useradd --create-home -s /bin/bash `cat /tmp/username` && mkdir -p /home/`cat /tmp/username`/actions-runner
+RUN useradd --create-home -s /bin/bash "$(cat /tmp/username)" && mkdir -p /home/"$(cat /tmp/username)"/actions-runner
 
-WORKDIR /home/`cat /tmp/username`/actions-runner
+WORKDIR /home/"$(cat /tmp/username)"/actions-runner
 
 RUN curl -o ./actions-runner-linux-x64.tar.gz -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
 RUN tar -xzf ./actions-runner-linux-x64.tar.gz
 
-RUN chown -R `cat /tmp/username` /home/`cat /tmp/username` && ./bin/installdependencies.sh
+RUN chown -R "$(cat /tmp/username)" /home/"$(cat /tmp/username)" && ./bin/installdependencies.sh
 
 COPY ./scripts/docker-entrypoint.sh docker-entrypoint.sh
 RUN chmod +x docker-entrypoint.sh
