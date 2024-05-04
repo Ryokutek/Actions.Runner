@@ -1,6 +1,7 @@
 services:
   github-actions-runner:
     image: zvesdochyot/github-actions-runner:latest
+    user: runner-user
     environment:
     - ORGANIZATION_NAME=
     - ACCESS_TOKEN=
