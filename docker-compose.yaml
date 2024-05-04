@@ -7,7 +7,7 @@ services:
     - GITHUB_API_VERSION=
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
-    - /actions-runner:/actions-runner:rw
+    - /actions-runner/running:/actions-runner/running:rw
     deploy:
       mode: replicated
       replicas: 1
