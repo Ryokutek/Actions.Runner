@@ -31,7 +31,7 @@ RUN apt update -y && apt install -y --no-install-recommends \
     dotnet-sdk-8.0
 
 RUN echo "runner-user" > /tmp/username
-RUN useradd -s /bin/bash "$(cat /tmp/username)"
+RUN useradd --create-home -s /bin/bash "$(cat /tmp/username)"
 
 WORKDIR /actions-runner
 
