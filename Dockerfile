@@ -1,16 +1,11 @@
-FROM debian:bookworm
+FROM debian:latest
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG RUNNER_VERSION=2.316.0
+ARG RUNNER_VERSION=2.320.0
 
 # Install core dependencies
 RUN apt update -y && apt upgrade -y
-RUN apt install -y --no-install-recommends \
-    sudo \
-    curl \
-    wget \
-    ca-certificates \
-    jq
+RUN apt install -y --no-install-recommends sudo curl wget ca-certificates jq
 
 # Install Docker repository
 RUN install -m 0755 -d /etc/apt/keyrings
@@ -35,8 +30,8 @@ RUN useradd --create-home -s /bin/bash "$(cat /tmp/username)"
 
 WORKDIR /actions-runner
 
-RUN curl -o ./actions-runner-linux-x64.tar.gz -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
-RUN tar -xzf ./actions-runner-linux-x64.tar.gz
+RUN curl -o ./runner.tar.gz -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
+RUN tar -xzf ./runner.tar.gz
 
 RUN chown -R "$(cat /tmp/username)" /actions-runner && ./bin/installdependencies.sh
 

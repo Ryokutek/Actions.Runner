@@ -1,10 +1,14 @@
 services:
   github-actions-runner:
     image: zvesdochyot/github-actions-runner:latest
+    container_name: github-actions-runner
     environment:
-    - ORGANIZATION_NAME=
-    - ACCESS_TOKEN=
-    - GITHUB_API_VERSION=
+      RUNNER_TYPE:
+      ORGANIZATION_NAME:
+      OWNER:
+      REPOSITORY:
+      ACCESS_TOKEN:
+      API_VERSION:
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - /actions-runner/running:/actions-runner/running:rw
@@ -17,5 +21,5 @@ services:
         max_attempts: 3
       resources:
         limits:
-          cpus: '0.5'
-          memory: 4G
+          cpus: '2'
+          memory: 8G
