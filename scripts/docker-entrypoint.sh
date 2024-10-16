@@ -26,11 +26,11 @@ WORKING_DIRECTORY="running"
 mkdir -p ${WORKING_DIRECTORY} && chown -R runner-user ${WORKING_DIRECTORY}
 
 if [ "$RUNNER_TYPE" == "organization" ]; then
-    ENTITY_URL=https://github.com/${ORGANIZATION_NAME}
+    ENTITY_URL="https://github.com/${ORGANIZATION_NAME}"
     REGISTRATION_URL="https://api.github.com/orgs/${ORGANIZATION_NAME}/actions/runners/registration-token"
-    REMOVE_URL=https://api.github.com/orgs/${ORGANIZATION_NAME}/actions/runners/remove-token
+    REMOVE_URL="https://api.github.com/orgs/${ORGANIZATION_NAME}/actions/runners/remove-token"
 elif [ "$RUNNER_TYPE" == "repository" ]; then
-    ENTITY_URL=https://github.com/${OWNER}/${REPOSITORY}
+    ENTITY_URL="https://github.com/${OWNER}/${REPOSITORY}"
     REGISTRATION_URL="https://api.github.com/repos/${OWNER}/${REPOSITORY}/actions/runners/registration-token"
     REMOVE_URL="https://api.github.com/repos/${OWNER}/${REPOSITORY}/actions/runners/remove-token"
 else
