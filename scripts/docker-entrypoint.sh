@@ -42,20 +42,7 @@ ACCEPT_HEADER="Accept: application/vnd.github+json"
 AUTHORIZATION_HEADER="Authorization: Bearer ${ACCESS_TOKEN}"
 API_VERSION_HEADER="X-GitHub-Api-Version: ${API_VERSION}"
 
-CURL_RESULT=$(curl -L -X POST -H "${ACCEPT_HEADER}" -H "${AUTHORIZATION_HEADER}" -H "${API_VERSION_HEADER}" ${REGISTRATION_URL})
-echo "ACCEPT_HEADER: ${ACCEPT_HEADER}"
-echo "AUTHORIZATION_HEADER: ${AUTHORIZATION_HEADER}"
-echo "API_VERSION_HEADER: ${API_VERSION_HEADER}"
-echo "CURL result: ${CURL_RESULT}"
-
 REGISTRATION_TOKEN=$(curl -L -X POST -H "${ACCEPT_HEADER}" -H "${AUTHORIZATION_HEADER}" -H "${API_VERSION_HEADER}" ${REGISTRATION_URL} | jq .token --raw-output)
-
-echo "Entity URL: ${ENTITY_URL}"
-echo "Registration URL: ${REGISTRATION_URL}"
-echo "Remove URL: ${REMOVE_URL}"
-echo "Registration token: ${REGISTRATION_TOKEN}"
-echo "Working directory: ${WORKING_DIRECTORY}"
-
 sudo -u runner-user ./config.sh --unattended --url ${ENTITY_URL} --token ${REGISTRATION_TOKEN} --work ${WORKING_DIRECTORY} --labels docker-runner
 
 cleanup() {
