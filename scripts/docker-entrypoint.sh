@@ -42,13 +42,13 @@ ACCEPT_HEADER="Accept: application/vnd.github+json"
 AUTHORIZATION_HEADER="Authorization: Bearer ${ACCESS_TOKEN}"
 API_VERSION_HEADER="X-GitHub-Api-Version: ${API_VERSION}"
 
-REGISTRATION_TOKEN=$(curl -L -X POST -H ${ACCEPT_HEADER} -H ${AUTHORIZATION_HEADER} -H ${API_VERSION_HEADER} ${REGISTRATION_URL} | jq .token --raw-output)
+REGISTRATION_TOKEN=$(curl -L -X POST -H "${ACCEPT_HEADER}" -H "${AUTHORIZATION_HEADER}" -H "${API_VERSION_HEADER}" ${REGISTRATION_URL} | jq .token --raw-output)
 sudo -u runner-user ./config.sh --unattended --url ${ENTITY_URL} --token ${REGISTRATION_TOKEN} --work ${WORKING_DIRECTORY} --labels docker-runner
 
 cleanup() {
     echo "Started removing runner from ${ENTITY_URL}."
 
-    REMOVE_TOKEN=$(curl -L -X POST -H ${ACCEPT_HEADER} -H ${AUTHORIZATION_HEADER} -H ${API_VERSION_HEADER} ${REMOVE_URL} | jq .token --raw-output)
+    REMOVE_TOKEN=$(curl -L -X POST -H "${ACCEPT_HEADER}" -H "${AUTHORIZATION_HEADER}" -H "${API_VERSION_HEADER}" ${REMOVE_URL} | jq .token --raw-output)
     sudo -u runner-user ./config.sh remove --token ${REMOVE_TOKEN}
 
     echo "Successfully finished removing runner from ${ENTITY_URL}."
