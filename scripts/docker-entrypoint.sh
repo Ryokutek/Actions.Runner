@@ -21,7 +21,7 @@ REGISTRATION_TOKEN=$(curl -L -X POST -H "${ACCEPT_HEADER}" -H "${AUTHORIZATION_H
 ./config.sh --unattended --url ${ENTITY_URL} --token ${REGISTRATION_TOKEN} --work ${WORKING_DIRECTORY} --labels docker-runner
 
 cleanup() {
-    echo "Started removing runner from ${ENTITY_URL}."
+    echo "Starting removing runner from ${ENTITY_URL}."
 
     REMOVE_TOKEN=$(curl -L -X POST -H "${ACCEPT_HEADER}" -H "${AUTHORIZATION_HEADER}" -H "${API_VERSION_HEADER}" ${REMOVE_URL} | jq .token --raw-output)
     ./config.sh remove --token ${REMOVE_TOKEN}

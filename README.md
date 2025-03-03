@@ -2,7 +2,12 @@
 
 ### Building an image:
 ```
-docker build --tag <namespace>/github-actions-runner:latest .
+docker build \
+  --tag <namespace>/github-actions-runner:latest \
+  --build-arg RUNNER_UID=1000 \
+  --build-arg RUNNER_GID=1000 \
+  --build-arg DOCKER_GID=996 \
+  .
 ```
 
 ### Running an image:

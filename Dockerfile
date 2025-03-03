@@ -1,11 +1,12 @@
 FROM debian:latest
 
-ARG DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND=noninteractive \
+    RUNNER_UID=1000 \
+    RUNNER_GID=1000 \
+    DOCKER_GID=996
 
 # Set default values for UID and GID
-ENV RUNNER_UID=1000 \
-    RUNNER_GID=1000 \
-    RUNNER_VERSION=2.322.0
+ENV RUNNER_VERSION=2.322.0
 
 
 # Install core dependencies
@@ -33,7 +34,8 @@ RUN apt update -y && apt install -y --no-install-recommends \
 
 
 RUN groupadd -g ${RUNNER_GID} github-runner && \
-    useradd -u ${RUNNER_UID} -g github-runner -s /usr/sbin/nologin github-runner
+    groupadd -g ${DOCKER_GID} docker && \
+    useradd -u ${RUNNER_UID} -g github-runner -G docker -s /usr/sbin/nologin github-runner
 
 WORKDIR /actions-runner
 
@@ -44,13 +46,12 @@ RUN curl -o ./runner.tar.gz -L https://github.com/actions/runner/releases/downlo
 # Install dependencies for the runner
 RUN ./bin/installdependencies.sh
 
-# This lets the Docker socket be accessed by the github-runner when mounted
-RUN DOCKER_GROUP_ID=999 && \
-    groupadd -g ${DOCKER_GROUP_ID} docker && \
-    usermod -aG docker github-runner
-
 COPY ./scripts/docker-entrypoint.sh docker-entrypoint.sh
 RUN chmod +x docker-entrypoint.sh
+
+RUN WORKING_DIRECTORY="running" \
+    mkdir -p ${WORKING_DIRECTORY} && \
+    chown -R github-runner:github-runner /actions-runner
 
 # Switch to non-root user
 USER github-runner

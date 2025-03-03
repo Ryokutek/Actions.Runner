@@ -1,13 +1,15 @@
 services:
   github-actions-runner:
+    image: github-actions-runner
+    container_name: github-actions-runner
     build:
       context: .
       dockerfile: Dockerfile
-    image: github-actions-runner
-    container_name: github-actions-runner
+      args:
+        RUNNER_UID:
+        RUNNER_GID:
+        DOCKER_GID:
     environment:
-      RUNNER_UID:
-      RUNNER_GID:
       RUNNER_VERSION:
       RUNNER_TYPE:
       ORGANIZATION_NAME:
