@@ -1,8 +1,14 @@
 services:
   github-actions-runner:
-    image: zvesdochyot/github-actions-runner:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: github-actions-runner
     container_name: github-actions-runner
     environment:
+      RUNNER_UID:
+      RUNNER_GID:
+      RUNNER_VERSION:
       RUNNER_TYPE:
       ORGANIZATION_NAME:
       OWNER:

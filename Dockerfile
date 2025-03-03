@@ -1,7 +1,12 @@
 FROM debian:latest
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG RUNNER_VERSION=2.320.0
+
+# Set default values for UID and GID
+ENV RUNNER_UID=1000 \
+    RUNNER_GID=1000 \
+    RUNNER_VERSION=2.322.0
+
 
 # Install core dependencies
 RUN apt update -y && apt upgrade -y
@@ -13,29 +18,41 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings
 RUN chmod a+r /etc/apt/keyrings/docker.asc
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-# Install .NET 8 SDK repository
+# Install .NET SDK repository
 RUN wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 RUN dpkg -i packages-microsoft-prod.deb
 RUN rm packages-microsoft-prod.deb
 
-# Install Docker CLI and .NET 8 SDK
+# Install Docker CLI and .NET SDK
 RUN apt update -y && apt install -y --no-install-recommends \
     docker-ce-cli \
     docker-buildx-plugin \
     docker-compose-plugin \
-    dotnet-sdk-8.0
+    dotnet-sdk-8.0 \
+    dotnet-sdk-9.0
 
-RUN echo "runner-user" > /tmp/username
-RUN useradd --create-home -s /bin/bash "$(cat /tmp/username)"
+
+RUN groupadd -g ${RUNNER_GID} github-runner && \
+    useradd -u ${RUNNER_UID} -g github-runner -s /usr/sbin/nologin github-runner
 
 WORKDIR /actions-runner
 
-RUN curl -o ./runner.tar.gz -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
-RUN tar -xzf ./runner.tar.gz
+RUN curl -o ./runner.tar.gz -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz && \
+    tar -xzf ./runner.tar.gz && \
+    rm runner.tar.gz
 
-RUN chown -R "$(cat /tmp/username)" /actions-runner && ./bin/installdependencies.sh
+# Install dependencies for the runner
+RUN ./bin/installdependencies.sh
+
+COPY ./scripts/bootstrap.sh bootstrap.sh
+RUN chmod +x bootstrap.sh && \
+    ./bootstrap.sh && \
+    chown -R github-runner:github-runner /actions-runner
 
 COPY ./scripts/docker-entrypoint.sh docker-entrypoint.sh
 RUN chmod +x docker-entrypoint.sh
+
+# Switch to non-root user
+USER github-runner
 
 ENTRYPOINT [ "./docker-entrypoint.sh" ]
