@@ -44,10 +44,10 @@ RUN curl -o ./runner.tar.gz -L https://github.com/actions/runner/releases/downlo
 # Install dependencies for the runner
 RUN ./bin/installdependencies.sh
 
-COPY ./scripts/bootstrap.sh bootstrap.sh
-RUN chmod +x bootstrap.sh && \
-    ./bootstrap.sh && \
-    chown -R github-runner:github-runner /actions-runner
+# This lets the Docker socket be accessed by the github-runner when mounted
+RUN DOCKER_GROUP_ID=999 && \
+    groupadd -g ${DOCKER_GROUP_ID} docker && \
+    usermod -aG docker github-runner
 
 COPY ./scripts/docker-entrypoint.sh docker-entrypoint.sh
 RUN chmod +x docker-entrypoint.sh
