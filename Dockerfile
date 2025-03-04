@@ -1,6 +1,7 @@
 FROM debian:latest
 
 ARG DEBIAN_FRONTEND=noninteractive \
+    WORKING_DIRECTORY=running \
     RUNNER_UID=1000 \
     RUNNER_GID=1000 \
     DOCKER_GID=996
@@ -49,8 +50,7 @@ RUN ./bin/installdependencies.sh
 COPY ./scripts/docker-entrypoint.sh docker-entrypoint.sh
 RUN chmod +x docker-entrypoint.sh
 
-RUN WORKING_DIRECTORY="running" \
-    mkdir -p ${WORKING_DIRECTORY} && \
+RUN mkdir -p ${WORKING_DIRECTORY} && \
     chown -R github-runner:github-runner /actions-runner
 
 # Switch to non-root user

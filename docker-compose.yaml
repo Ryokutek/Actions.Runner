@@ -1,3 +1,6 @@
+volumes:
+  actions-runner-data:
+
 services:
   github-actions-runner:
     image: github-actions-runner
@@ -19,7 +22,7 @@ services:
       API_VERSION:
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
-    - /actions-runner/running:/actions-runner/running:rw
+    - actions-runner-data:/actions-runner/running:rw
     deploy:
       mode: replicated
       replicas: 1
