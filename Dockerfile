@@ -1,13 +1,12 @@
 FROM debian:latest
 
 ARG DEBIAN_FRONTEND=noninteractive \
-    WORKING_DIRECTORY=running \
     RUNNER_UID=1000 \
     RUNNER_GID=1000 \
     DOCKER_GID=996
 
-# Set default values for UID and GID
-ENV RUNNER_VERSION=2.322.0
+ENV RUNNER_VERSION=2.322.0 \
+    WORKING_DIRECTORY=running
 
 
 # Install core dependencies
@@ -36,7 +35,7 @@ RUN apt update -y && apt install -y --no-install-recommends \
 
 RUN groupadd -g ${RUNNER_GID} github-runner && \
     groupadd -g ${DOCKER_GID} docker && \
-    useradd -u ${RUNNER_UID} -g github-runner -G docker -s /usr/sbin/nologin github-runner
+    useradd --create-home -u ${RUNNER_UID} -g github-runner -G docker -s /usr/sbin/nologin github-runner
 
 WORKDIR /actions-runner
 
