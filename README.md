@@ -13,8 +13,6 @@ docker build \
 ### Running an image:
 ```
 docker run -d \
-  -e RUNNER_UID=<host user id> \
-  -e RUNNER_GID=<host group id> \
   -e RUNNER_VERSION=<GitHub runner version> \
   -e RUNNER_TYPE=<'organization' or 'repository'> \
   -e ORGANIZATION_NAME=<GitHub organization name> \

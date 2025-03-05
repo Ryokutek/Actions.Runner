@@ -15,11 +15,11 @@ services:
     environment:
       RUNNER_VERSION:
       RUNNER_TYPE:
+      ACCESS_TOKEN:
+      API_VERSION:
       ORGANIZATION_NAME:
       OWNER:
       REPOSITORY:
-      ACCESS_TOKEN:
-      API_VERSION:
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - actions-runner-data:/actions-runner/running:rw
