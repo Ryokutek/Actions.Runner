@@ -5,6 +5,7 @@ services:
   github-actions-runner:
     image: github-actions-runner
     container_name: github-actions-runner
+    restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile

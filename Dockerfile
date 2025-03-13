@@ -8,7 +8,6 @@ ARG DEBIAN_FRONTEND=noninteractive \
 ENV RUNNER_VERSION=2.322.0 \
     WORKING_DIRECTORY=running
 
-
 # Install core dependencies
 RUN apt update -y && apt upgrade -y
 RUN apt install -y --no-install-recommends sudo curl wget ca-certificates jq
@@ -31,7 +30,6 @@ RUN apt update -y && apt install -y --no-install-recommends \
     docker-compose-plugin \
     dotnet-sdk-8.0 \
     dotnet-sdk-9.0
-
 
 RUN groupadd -g ${RUNNER_GID} github-runner && \
     groupadd -g ${DOCKER_GID} docker && \
