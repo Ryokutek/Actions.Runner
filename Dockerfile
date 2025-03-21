@@ -1,12 +1,12 @@
 FROM debian:latest
 
 ARG DEBIAN_FRONTEND=noninteractive \
+    RUNNER_VERSION=2.323.0 \
     RUNNER_UID=1000 \
     RUNNER_GID=1000 \
     DOCKER_GID=996
 
-ENV RUNNER_VERSION=2.322.0 \
-    WORKING_DIRECTORY=running
+ENV WORKING_DIRECTORY=running
 
 # Install core dependencies
 RUN apt update -y && apt upgrade -y
